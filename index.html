@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#111827">
+  <title>Insta Creator AI</title>
+  <style>
+    *{box-sizing:border-box}body{margin:0;background:#0b1020;color:#f8fafc;font-family:system-ui,Arial,sans-serif}
+    main{max-width:620px;margin:35px auto;padding:20px}.panel{background:#151d31;border:1px solid #29344e;border-radius:20px;padding:22px}
+    h1{margin-top:0;font-size:27px}.muted{color:#aab6cc;line-height:1.8}.status{padding:13px;border-radius:12px;background:#0b1020;margin:18px 0;line-height:1.8}
+    button{width:100%;border:0;border-radius:12px;padding:14px;font-size:16px;font-weight:700;background:#8b5cf6;color:white}
+    button:disabled{opacity:.5}small{color:#aab6cc}a{color:#c4b5fd}
+  </style>
+</head>
+<body>
+<main>
+  <section class="panel">
+    <h1>✨ Insta Creator AI</h1>
+    <p class="muted">ينشئ الذكاء الاصطناعي فكرة وصورة ووصفاً، ثم ينشر منشوراً واحداً يومياً حسب الجدول المضبوط على الخادم.</p>
+    <div class="status" id="status">جارٍ فحص حالة الخادم...</div>
+    <button id="refresh">تحديث الحالة</button>
+    <p><small>زر التجربة اليدوية مخصص للمشرف ولا يظهر إلا بعد إعداد الخادم. لا تضع مفاتيح API أو كلمة مرور Instagram هنا.</small></p>
+  </section>
+</main>
+<script>
+async function refresh(){
+  const box=document.getElementById("status");
+  try{
+    const r=await fetch("/api/status"); const d=await r.json();
+    box.textContent=d.configured
+      ? `الخادم جاهز. الجدول: ${d.schedule} — المنطقة الزمنية: ${d.timezone}. آخر حالة: ${d.lastRun.message}`
+      : `الإعداد غير مكتمل. المتغيرات الناقصة: ${d.missing.join("، ")}`;
+  }catch(e){box.textContent="تعذر الاتصال بالخادم."}
+}
+document.getElementById("refresh").addEventListener("click",refresh);
+refresh();
+</script>
+</body>
+</html>
